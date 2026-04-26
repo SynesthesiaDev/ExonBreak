@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ExonBreak.Resources\ExonBreak.Resources.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ppy.osu.Framework" Version="2026.422.0"/>
+        <PackageReference Include="Serilog" Version="4.3.2-dev-02419" />
+        <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
+    </ItemGroup>
+</Project>

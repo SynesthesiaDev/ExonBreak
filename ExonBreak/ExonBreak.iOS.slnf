@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "ExonBreak.sln",
+    "projects": [
+      "ExonBreak.Game\\ExonBreak.Game.csproj",
+      "ExonBreak.Resources\\ExonBreak.Resources.csproj",
+      "ExonBreak.iOS\\ExonBreak.iOS.csproj"
+    ]
+  }
+}

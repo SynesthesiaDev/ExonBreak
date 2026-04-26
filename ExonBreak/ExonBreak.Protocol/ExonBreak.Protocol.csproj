@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>14</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DotNetty.Common" Version="0.7.6" />
+      <PackageReference Include="DotNetty.Extensions" Version="3.0.0" />
+      <PackageReference Include="DotNetty.Handlers" Version="0.7.6" />
+      <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
+      <PackageReference Include="Faster.Map" Version="8.1.1" />
+      <PackageReference Include="SynesthesiaDev.Codon.BinaryCodec" Version="2026.426.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Packets\Login\" />
+      <Folder Include="Packets\Play\" />
+    </ItemGroup>
+
+</Project>
