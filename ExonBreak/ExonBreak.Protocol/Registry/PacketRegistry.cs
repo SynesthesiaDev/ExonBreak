@@ -25,9 +25,13 @@ public class PacketRegistry
         a?.Handler = handler;
     }
 
-    public int GetId<T>() => typeToId[typeof(T)];
+    public int GetId<T>() => GetId(typeof(T));
+
+    public int GetId(Type type) => typeToId[type];
 
     public ProtocolSerializer<T> GetSerializer<T>() where T : IProtocolObject => (ProtocolSerializer<T>)idToEntry[typeToId[typeof(T)]].Serializer;
+
+    public IProtocolSerializer GetSerializer(Type type) => (IProtocolSerializer)idToEntry[typeToId[type]].Serializer;
 
     public void ProcessPacket(WrappedPacket wrappedPacket, PacketContext context)
     {

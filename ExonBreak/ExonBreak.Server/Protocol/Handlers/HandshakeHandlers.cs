@@ -30,11 +30,11 @@ public sealed class HandshakeHandlers
             return;
         }
 
-        // if (DedicatedServer.BannedPlayers.Contains(player.Id))
-        // {
-        //     context.SendPacket(deny_banned);
-        //     return;
-        // }
+        if (ServerConfig.BannedPlayers.Contains(player.Id))
+        {
+            context.SendPacket(deny_banned);
+            return;
+        }
 
         if (ServerConfig.WhitelistEnabled && !ServerConfig.WhitelistedPlayers.Contains(player.Id))
         {

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Codon.Codec;
 using Codon.Codec.Json;
+using Codon.Codec.Versioned;
 using Serilog;
 
 namespace ExonBreak.Server.Config;
@@ -11,6 +12,7 @@ public static class ServerConfig
     private static readonly string config_path = Path.Join(DedicatedServer.PATH, "config.json");
 
     private static ConfigFile current = null!;
+    private static bool ranMigration = false;
 
     public static string Ip => current.Ip;
     public static int Port => current.Port;
@@ -20,6 +22,7 @@ public static class ServerConfig
 
     public static bool WhitelistEnabled => current.Whitelist.Enabled;
     public static IReadOnlyList<Guid> WhitelistedPlayers => current.Whitelist.Players.AsReadOnly();
+    public static IReadOnlyList<Guid> BannedPlayers => current.BannedPlayers.AsReadOnly();
 
     public static void WhitelistPlayer(Guid player)
     {
@@ -39,6 +42,7 @@ public static class ServerConfig
         Port: 58730,
         MaxPlayers: 4,
         Whitelist: Whitelist.DEFAULT,
+        BannedPlayers: [],
         Title: "Exon Break Server",
         Subtitle: "The default Exon Break server"
     );
@@ -60,6 +64,7 @@ public static class ServerConfig
             var readConfig = ConfigFile.CODEC.Decode(JsonTranscoder.INSTANCE, JsonDocument.Parse(readJson).RootElement);
             current = readConfig;
             Log.Information("Loaded server config file!");
+            if (ranMigration) Write();
         }
         catch (Exception exception)
         {
@@ -78,20 +83,40 @@ public static class ServerConfig
         int Port,
         int MaxPlayers,
         Whitelist Whitelist,
+        List<Guid> BannedPlayers,
         string Title,
         string Subtitle
     )
     {
-        public static readonly Codec<ConfigFile> CODEC = StructCodec.Of
+        public static readonly StructCodec<ConfigFile> RAW_CODEC = StructCodec.Of
         (
             "ip", Codecs.STRING, c => c.Ip,
             "port", Codecs.INT, c => c.Port,
             "max_players", Codecs.INT, c => c.MaxPlayers,
             "whitelist", Whitelist.CODEC, c => c.Whitelist,
+            "banned_players", guid_codec.List(), c => c.BannedPlayers,
             "title", Codecs.STRING, c => c.Title,
             "subtitle", Codecs.STRING, c => c.Subtitle,
-            (ip, port, max, whitelist, title, subtitle) => new ConfigFile(ip, port, max, whitelist, title, subtitle)
+            (ip, port, max, whitelist, banned, title, subtitle) => new ConfigFile(ip, port, max, whitelist, banned, title, subtitle)
         );
+
+        // Schema version changes:
+        // 2 - Added `BannedPlayers`
+        public static readonly VersionedStructCodec<ConfigFile> CODEC = new VersionedStructCodec<ConfigFile>
+        {
+            CurrentSchemaVersion = 2,
+            InnerCodec = RAW_CODEC,
+            SchemaMigrationRegistry = SchemaMigrationRegistry.Builder()
+                .For<JsonElement>(migrations =>
+                {
+                    migrations.Add(2, (transcoder, _, output) =>
+                    {
+                        Log.Debug("Migrating server config to schema version 2..");
+                        ranMigration = true;
+                        output.Put("banned_players", transcoder.EncodeList(0).Build());
+                    });
+                })
+        };
     }
 
     public record Whitelist(

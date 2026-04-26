@@ -8,6 +8,6 @@ public class PacketContext(IChannelHandlerContext channelHandlerContext)
 
     public void SendPacket(IPacket packet)
     {
-
+        ChannelHandlerContext.WriteAndFlushAsync(packet);
     }
 }
