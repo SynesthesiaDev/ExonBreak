@@ -1,6 +1,7 @@
 ﻿using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
+using Serilog;
 
 namespace ExonBreak.Server.Protocol.Netty;
 
@@ -10,6 +11,7 @@ public class InboundFrameDecoder : ByteToMessageDecoder
 
     protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)
     {
+        Log.Debug("Lenght decoder decoding..");
         if (input.ReadableBytes < header_length) return;
 
         input.MarkReaderIndex();

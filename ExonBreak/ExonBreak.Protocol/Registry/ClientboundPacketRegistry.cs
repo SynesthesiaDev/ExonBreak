@@ -6,8 +6,8 @@ public class ClientboundPacketRegistry : PacketRegistry
 {
     public ClientboundPacketRegistry()
     {
-        Register(ClientboundHandshakeResponsePacket.SERIALIZER, null);
-        Register(ClientboundDenyLoginPacket.SERIALIZER, null);
-        Register(ClientboundAcceptLoginPacket.SERIALIZER, null);
+        Register(ClientboundHandshakeResponsePacket.SERIALIZER);
+        Register(ClientboundDenyLoginPacket.SERIALIZER);
+        Register(ClientboundAcceptLoginPacket.SERIALIZER);
     }
 }

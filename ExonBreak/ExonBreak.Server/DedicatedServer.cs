@@ -45,7 +45,7 @@ public class DedicatedServer
         ServerConfig.Load();
         InvalidateCachedStatus();
 
-        PacketHandlers.RegisterHandlers(SERVERBOUND_PACKET_REGISTRY);
+        ServerPacketHandlers.RegisterHandlers(SERVERBOUND_PACKET_REGISTRY);
 
         var netty = new NettyServer();
         _ = netty.StartAsync();

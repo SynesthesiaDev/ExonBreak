@@ -33,10 +33,7 @@ public class NettyServer
                     // Outbound
                     pipeline.AddLast(new OutboundLengthPrepender());
                     pipeline.AddLast(new OutboundWrappedPacketEncoder());
-                    pipeline.AddLast(new OutboundPacketEncoder());
-
-                    // Handling
-                    pipeline.AddLast(new ServerPacketHandler());
+                    pipeline.AddLast(new OutboundServerPacketEncoder());
                 }));
 
             var endPoint = new IPEndPoint(IPAddress.Parse(ServerConfig.Ip), ServerConfig.Port);

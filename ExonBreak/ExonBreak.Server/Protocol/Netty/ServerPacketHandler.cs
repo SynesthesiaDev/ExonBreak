@@ -11,6 +11,7 @@ public class ServerPacketHandler : SimpleChannelInboundHandler<WrappedPacket>
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
+        Log.Information("new client established: {ip}", context.Channel.RemoteAddress.ToString());
         packetContext = new PacketContext(context);
         base.ChannelActive(context);
     }

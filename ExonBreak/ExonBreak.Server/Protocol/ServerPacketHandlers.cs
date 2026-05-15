@@ -4,11 +4,11 @@ using ExonBreak.Server.Protocol.Handlers;
 
 namespace ExonBreak.Server.Protocol;
 
-public class PacketHandlers
+public class ServerPacketHandlers
 {
     public static void RegisterHandlers(ServerboundPacketRegistry packetRegistry)
     {
-        packetRegistry.AddHandler<ServerboundHandshakeRequestPacket>(HandshakeHandlers.HandleHandshake);
-        packetRegistry.AddHandler<ServerboundAttemptLoginPacket>(HandshakeHandlers.HandleLoginAttempt);
+        packetRegistry.AddHandler<ServerboundHandshakeRequestPacket>(ServerHandshakeHandlers.HandleHandshake);
+        packetRegistry.AddHandler<ServerboundAttemptLoginPacket>(ServerHandshakeHandlers.HandleLoginAttempt);
     }
 }

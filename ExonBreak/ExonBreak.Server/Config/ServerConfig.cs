@@ -2,6 +2,7 @@
 using Codon.Codec;
 using Codon.Codec.Json;
 using Codon.Codec.Versioned;
+using ExonBreak.Protocol;
 using Serilog;
 
 namespace ExonBreak.Server.Config;
@@ -11,7 +12,7 @@ public static class ServerConfig
     private static readonly Codec<Guid> guid_codec = Codecs.STRING.Transform(Guid.Parse, guid => guid.ToString());
     private static readonly string config_path = Path.Join(DedicatedServer.PATH, "config.json");
 
-    private static ConfigFile current = null!;
+    private static ServerConfigFile current = null!;
     private static bool ranMigration = false;
 
     public static string Ip => current.Ip;
@@ -36,10 +37,10 @@ public static class ServerConfig
         current = current with { Subtitle = subtitle };
     }
 
-    public static readonly ConfigFile DEFAULT = new ConfigFile
+    public static readonly ServerConfigFile DEFAULT = new ServerConfigFile
     (
-        Ip: "0.0.0.0",
-        Port: 58730,
+        Ip: SharedConstants.DEFAULT_IP_ADDRESS,
+        Port: SharedConstants.DEFAULT_PORT,
         MaxPlayers: 4,
         Whitelist: Whitelist.DEFAULT,
         BannedPlayers: [],
@@ -61,7 +62,7 @@ public static class ServerConfig
             }
 
             var readJson = File.ReadAllText(config_path);
-            var readConfig = ConfigFile.CODEC.Decode(JsonTranscoder.INSTANCE, JsonDocument.Parse(readJson).RootElement);
+            var readConfig = ServerConfigFile.CODEC.Decode(JsonTranscoder.INSTANCE, JsonDocument.Parse(readJson).RootElement);
             current = readConfig;
             Log.Information("Loaded server config file!");
             if (ranMigration) Write();
@@ -74,11 +75,11 @@ public static class ServerConfig
 
     public static void Write()
     {
-        var json = ConfigFile.CODEC.Encode(JsonTranscoder.INSTANCE, current).ToString();
+        var json = ServerConfigFile.CODEC.Encode(JsonTranscoder.INSTANCE, current).ToString();
         File.WriteAllText(config_path, json);
     }
 
-    public record ConfigFile(
+    public record ServerConfigFile(
         string Ip,
         int Port,
         int MaxPlayers,
@@ -88,7 +89,7 @@ public static class ServerConfig
         string Subtitle
     )
     {
-        public static readonly StructCodec<ConfigFile> RAW_CODEC = StructCodec.Of
+        public static readonly StructCodec<ServerConfigFile> RAW_CODEC = StructCodec.Of
         (
             "ip", Codecs.STRING, c => c.Ip,
             "port", Codecs.INT, c => c.Port,
@@ -97,12 +98,12 @@ public static class ServerConfig
             "banned_players", guid_codec.List(), c => c.BannedPlayers,
             "title", Codecs.STRING, c => c.Title,
             "subtitle", Codecs.STRING, c => c.Subtitle,
-            (ip, port, max, whitelist, banned, title, subtitle) => new ConfigFile(ip, port, max, whitelist, banned, title, subtitle)
+            (ip, port, max, whitelist, banned, title, subtitle) => new ServerConfigFile(ip, port, max, whitelist, banned, title, subtitle)
         );
 
         // Schema version changes:
         // 2 - Added `BannedPlayers`
-        public static readonly VersionedStructCodec<ConfigFile> CODEC = new VersionedStructCodec<ConfigFile>
+        public static readonly VersionedStructCodec<ServerConfigFile> CODEC = new VersionedStructCodec<ServerConfigFile>
         {
             CurrentSchemaVersion = 2,
             InnerCodec = RAW_CODEC,

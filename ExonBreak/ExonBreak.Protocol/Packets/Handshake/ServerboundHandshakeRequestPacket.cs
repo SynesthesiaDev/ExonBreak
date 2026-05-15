@@ -3,7 +3,7 @@ using ExonBreak.Protocol.Types.Player;
 
 namespace ExonBreak.Protocol.Packets.Handshake;
 
-public record ServerboundHandshakeRequestPacket(int ServerProtocolVersion, PlayerInfo PlayerInfo) : IProtocolObject
+public record ServerboundHandshakeRequestPacket(int ServerProtocolVersion, PlayerInfo PlayerInfo) : IPacket
 {
     public static readonly BinaryCodec<ServerboundHandshakeRequestPacket> CODEC = BinaryCodec.Of
     (

@@ -1,26 +1,24 @@
-﻿using osu.Framework.Allocation;
+﻿using ExonBreak.Game.Screens.MultiplayerMenu;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
-namespace ExonBreak.Game
+namespace ExonBreak.Game;
+
+public partial class ExonBreakGame : ExonBreakGameBase
 {
-    public partial class ExonBreakGame : ExonBreakGameBase
+    private ScreenStack screenStack;
+
+    [BackgroundDependencyLoader]
+    private void load()
     {
-        private ScreenStack screenStack;
+        Child = screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both };
+    }
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            // Add your top-level game components here.
-            // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
-            Child = screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both };
-        }
+    protected override void LoadComplete()
+    {
+        base.LoadComplete();
 
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            screenStack.Push(new MainScreen());
-        }
+        screenStack.Push(new MultiplayerMenuScreen());
     }
 }
