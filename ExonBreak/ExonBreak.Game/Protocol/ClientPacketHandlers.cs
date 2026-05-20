@@ -11,8 +11,5 @@ public class ClientPacketHandlers
         packetRegistry.AddHandler<ClientboundHandshakeResponsePacket>(ClientHandshakeHandlers.HandleHandshake);
         packetRegistry.AddHandler<ClientboundAcceptLoginPacket>(ClientHandshakeHandlers.HandleAttemptLoginAccept);
         packetRegistry.AddHandler<ClientboundDenyLoginPacket>(ClientHandshakeHandlers.HandleAttemptLoginDeny);
-
-        // packetRegistry.AddHandler<ServerboundHandshakeRequestPacket>(ServerHandshakeHandlers.HandleHandshake);
-        // packetRegistry.AddHandler<ServerboundAttemptLoginPacket>(ServerHandshakeHandlers.HandleLoginAttempt);
     }
 }

@@ -1,10 +1,11 @@
 ﻿using DotNetty.Codecs;
 using ExonBreak.Protocol.Packets;
+using ExonBreak.Server.Protocol;
 using Faster.Map.Core;
 
 namespace ExonBreak.Protocol.Registry;
 
-public class PacketRegistry
+public class PacketRegistry(Action<string> logFunction, ProtocolSide side)
 {
     private int idCounter;
 
@@ -38,6 +39,7 @@ public class PacketRegistry
         if (!idToEntry.Get(wrappedPacket.Id, out var entry)) throw new DecoderException($"Unknown packet with ID '{wrappedPacket.Id}'");
 
         var packet = ((IProtocolSerializer)entry.Serializer).Read(wrappedPacket.Data);
+        logFunction.Invoke($"({side.ToString()}) → {packet.GetType().Name}");
         entry.Handle(packet, context);
     }
 

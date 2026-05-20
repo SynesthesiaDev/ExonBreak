@@ -2,21 +2,23 @@
 using ExonBreak.Protocol;
 using ExonBreak.Protocol.Packets.Handshake;
 using ExonBreak.Server.Config;
+using Serilog;
 
 namespace ExonBreak.Server.Protocol.Handlers;
 
 public sealed class ServerHandshakeHandlers
 {
-    private static readonly ClientboundDenyLoginPacket DenyVersionMismatch = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.ProtocolVersionMismatch);
-    private static readonly ClientboundDenyLoginPacket DenyBanned = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.Banned);
-    private static readonly ClientboundDenyLoginPacket DenyWhitelist = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.NotWhitelist);
-    private static readonly ClientboundDenyLoginPacket DenyInvalidUsername = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.InvalidName);
-    private static readonly ClientboundDenyLoginPacket DenyMaxPlayersOnline = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.MaxPlayersOnline);
+    private static readonly ClientboundDenyLoginPacket deny_version_mismatch = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.ProtocolVersionMismatch);
+    private static readonly ClientboundDenyLoginPacket deny_banned = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.Banned);
+    private static readonly ClientboundDenyLoginPacket deny_whitelist = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.NotWhitelist);
+    private static readonly ClientboundDenyLoginPacket deny_invalid_username = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.InvalidName);
+    private static readonly ClientboundDenyLoginPacket deny_max_players_online = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.MaxPlayersOnline);
 
-    private static readonly Regex UsernameRegex = new Regex("^[a-zA-Z0-9_]{3,16}$", RegexOptions.Compiled);
+    private static readonly Regex username_regex = new Regex("^[a-zA-Z0-9_]{3,16}$", RegexOptions.Compiled);
 
     public static void HandleHandshake(ServerboundHandshakeRequestPacket packet, PacketContext context)
     {
+        Log.Information("Received handshake from player {client}", packet.PlayerInfo);
         context.SendPacket(new ClientboundHandshakeResponsePacket(SharedConstants.PROTOCOL_VERSION, DedicatedServer.CachedStatus));
     }
 
@@ -26,31 +28,31 @@ public sealed class ServerHandshakeHandlers
 
         if (player.ClientProtocolVersion != SharedConstants.PROTOCOL_VERSION)
         {
-            context.SendPacket(DenyVersionMismatch);
+            context.SendPacket(deny_version_mismatch);
             return;
         }
 
         if (ServerConfig.BannedPlayers.Contains(player.Id))
         {
-            context.SendPacket(DenyBanned);
+            context.SendPacket(deny_banned);
             return;
         }
 
         if (ServerConfig.WhitelistEnabled && !ServerConfig.WhitelistedPlayers.Contains(player.Id))
         {
-            context.SendPacket(DenyWhitelist);
+            context.SendPacket(deny_whitelist);
             return;
         }
 
-        if (!UsernameRegex.IsMatch(player.Username))
+        if (!username_regex.IsMatch(player.Username))
         {
-            context.SendPacket(DenyInvalidUsername);
+            context.SendPacket(deny_invalid_username);
             return;
         }
 
         if (DedicatedServer.OnlinePlayers >= DedicatedServer.MaxPlayers)
         {
-            context.SendPacket(DenyMaxPlayersOnline);
+            context.SendPacket(deny_max_players_online);
             return;
         }
 

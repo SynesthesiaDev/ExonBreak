@@ -11,14 +11,13 @@ public class ServerPacketHandler : SimpleChannelInboundHandler<WrappedPacket>
 
     public override void ChannelActive(IChannelHandlerContext context)
     {
-        Log.Information("new client established: {ip}", context.Channel.RemoteAddress.ToString());
-        packetContext = new PacketContext(context);
+        Log.Information("(Server) New client connection established: {ip}", context.Channel.RemoteAddress.ToString());
+        packetContext = new PacketContext(context, Log.Verbose, ProtocolSide.Server);
         base.ChannelActive(context);
     }
 
     protected override void ChannelRead0(IChannelHandlerContext ctx, WrappedPacket msg)
     {
-        Log.Information("Received packet with id: {Id}", msg.Id);
         try
         {
             DedicatedServer.SERVERBOUND_PACKET_REGISTRY.ProcessPacket(msg, packetContext);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
+using ExonBreak.Protocol.Types;
 using ExonBreak.Server.Protocol.Netty;
 using osu.Framework.Logging;
 
@@ -13,6 +14,7 @@ public class NettyClient(string ip, int port, GameClient client)
 {
     private IChannel channel = null!;
     private IEventLoopGroup group = null!;
+    private PacketHandler packetHandler = null!;
 
     public async Task ConnectAsync()
     {
@@ -29,14 +31,13 @@ public class NettyClient(string ip, int port, GameClient client)
                 // Inbound
                 pipeline.AddLast(new InboundFrameDecoder());
                 pipeline.AddLast(new InboundWrappedPacketDecoder());
-                pipeline.AddLast(new ClientPacketHandler(client));
+                pipeline.AddLast(packetHandler = new ClientPacketHandler(client));
 
                 // Outbound
                 pipeline.AddLast(new OutboundLengthPrepender());
                 pipeline.AddLast(new OutboundWrappedPacketEncoder());
                 pipeline.AddLast(new OutboundClientPacketEncoder());
             }));
-
 
         try
         {
@@ -46,6 +47,9 @@ public class NettyClient(string ip, int port, GameClient client)
             channel = await bootstrap.ConnectAsync(endpoint);
 
             Logger.Log($"Connected to server at {ip}:{port}", LoggingTarget.Network);
+
+            packetHandler.OnConnected(channel);
+
             _ = waitForCloseAsync();
         }
         catch (Exception ex)
@@ -67,17 +71,6 @@ public class NettyClient(string ip, int port, GameClient client)
             await group.ShutdownGracefullyAsync();
             Logger.Log("Disconnected, event loop shut down", LoggingTarget.Network);
         }
-    }
-
-    public async Task SendAsync(object packet)
-    {
-        if (channel is { Active: true })
-        {
-            Logger.Log($"<- {packet.GetType().Name}", LoggingTarget.Network);
-            await channel.WriteAndFlushAsync(packet);
-        }
-        else
-            Logger.Log("Attempted to send packet but channel is not active", LoggingTarget.Network, LogLevel.Error);
     }
 
     public async Task DisconnectAsync()

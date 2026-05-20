@@ -11,7 +11,7 @@
     <ItemGroup>
       <PackageReference Include="Serilog" Version="4.3.2-dev-02419" />
       <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
-      <PackageReference Include="SynesthesiaDev.Codon.Codec" Version="2026.426.0" />
+      <PackageReference Include="SynesthesiaDev.Codon.Codec" Version="2026.520.0" />
     </ItemGroup>
 
     <ItemGroup>

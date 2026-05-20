@@ -13,7 +13,7 @@
       <PackageReference Include="DotNetty.Handlers" Version="0.7.6" />
       <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
       <PackageReference Include="Faster.Map" Version="8.1.1" />
-      <PackageReference Include="SynesthesiaDev.Codon.BinaryCodec" Version="2026.426.0" />
+      <PackageReference Include="SynesthesiaDev.Codon.BinaryCodec" Version="2026.520.1" />
     </ItemGroup>
 
     <ItemGroup>

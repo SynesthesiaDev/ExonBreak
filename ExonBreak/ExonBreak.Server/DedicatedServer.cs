@@ -10,8 +10,8 @@ namespace ExonBreak.Server;
 
 public class DedicatedServer
 {
-    public static readonly ServerboundPacketRegistry SERVERBOUND_PACKET_REGISTRY = new ServerboundPacketRegistry();
-    public static readonly ClientboundPacketRegistry CLIENTBOUND_PACKET_REGISTRY = new ClientboundPacketRegistry();
+    public static readonly ServerboundPacketRegistry SERVERBOUND_PACKET_REGISTRY = new ServerboundPacketRegistry(Log.Verbose, ProtocolSide.Server);
+    public static readonly ClientboundPacketRegistry CLIENTBOUND_PACKET_REGISTRY = new ClientboundPacketRegistry(Log.Verbose, ProtocolSide.Server);
     public static int OnlinePlayers { get; set; } = 0;
     public static int MaxPlayers { get; set; } = 0;
     public static int Expeditions { get; set; } = 0;
