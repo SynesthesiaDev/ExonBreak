@@ -5,12 +5,10 @@ namespace ExonBreak.Protocol.Packets.Handshake;
 
 public record ServerboundHandshakeRequestPacket(int ServerProtocolVersion, PlayerInfo PlayerInfo) : IPacket
 {
-    public static readonly BinaryCodec<ServerboundHandshakeRequestPacket> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.VAR_INT, p => p.ServerProtocolVersion,
-        PlayerInfo.CODEC, p => p.PlayerInfo,
-        (pv, player) => new ServerboundHandshakeRequestPacket(pv, player)
-    );
+    public static readonly IBinaryCodec<ServerboundHandshakeRequestPacket> CODEC = BinaryCodecs.For<ServerboundHandshakeRequestPacket>()
+        .Field(BinaryCodecs.VAR_INT, p => p.ServerProtocolVersion)
+        .Field(PlayerInfo.CODEC, p => p.PlayerInfo)
+        .Build((pv, player) => new ServerboundHandshakeRequestPacket(pv, player));
 
     public static readonly ProtocolSerializer<ServerboundHandshakeRequestPacket> SERIALIZER = Serializers.FromCodec(CODEC);
 }

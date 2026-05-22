@@ -5,12 +5,10 @@ namespace ExonBreak.Protocol.Packets.Handshake;
 
 public record ClientboundHandshakeResponsePacket(int ServerProtocolVersion, ClientboundHandshakeResponsePacket.Status ServerStatus) : IPacket
 {
-    public static readonly BinaryCodec<ClientboundHandshakeResponsePacket> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.VAR_INT, p => p.ServerProtocolVersion,
-        Status.CODEC, p => p.ServerStatus,
-        (version, status) => new ClientboundHandshakeResponsePacket(version, status)
-    );
+    public static readonly IBinaryCodec<ClientboundHandshakeResponsePacket> CODEC = BinaryCodecs.For<ClientboundHandshakeResponsePacket>()
+        .Field(BinaryCodecs.VAR_INT, p => p.ServerProtocolVersion)
+        .Field(Status.CODEC, p => p.ServerStatus)
+        .Build((version, status) => new ClientboundHandshakeResponsePacket(version, status));
 
     public static readonly ProtocolSerializer<ClientboundHandshakeResponsePacket> SERIALIZER = Serializers.FromCodec(CODEC);
 
@@ -22,14 +20,12 @@ public record ClientboundHandshakeResponsePacket(int ServerProtocolVersion, Clie
         int Expeditions
     )
     {
-        public static readonly BinaryCodec<Status> CODEC = BinaryCodec.Of
-        (
-            BinaryCodec.STRING, s => s.Title,
-            TextComponent.CODEC, s => s.Subtitle,
-            BinaryCodec.BOOLEAN, s => s.HasWhitelist,
-            BinaryCodec.VAR_INT, s => s.OnlinePlayers,
-            BinaryCodec.VAR_INT, s => s.Expeditions,
-            (title, subtitle, whitelist, online, expeditions) => new Status(title, subtitle, whitelist, online, expeditions)
-        );
+        public static readonly IBinaryCodec<Status> CODEC = BinaryCodecs.For<Status>()
+            .Field(BinaryCodecs.STRING, s => s.Title)
+            .Field(TextComponent.CODEC, s => s.Subtitle)
+            .Field(BinaryCodecs.BOOLEAN, s => s.HasWhitelist)
+            .Field(BinaryCodecs.VAR_INT, s => s.OnlinePlayers)
+            .Field(BinaryCodecs.VAR_INT, s => s.Expeditions)
+            .Build((title, subtitle, whitelist, online, expeditions) => new Status(title, subtitle, whitelist, online, expeditions));
     }
 }

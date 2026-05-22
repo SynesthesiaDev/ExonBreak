@@ -13,7 +13,7 @@ public static class ServerConfig
     private static readonly string config_path = Path.Join(DedicatedServer.PATH, "config.json");
 
     private static ServerConfigFile current = null!;
-    private static bool ranMigration = false;
+    private static bool ranMigration;
 
     public static string Ip => current.Ip;
     public static int Port => current.Port;
@@ -89,17 +89,15 @@ public static class ServerConfig
         string Subtitle
     )
     {
-        public static readonly StructCodec<ServerConfigFile> RAW_CODEC = StructCodec.Of
-        (
-            "ip", Codecs.STRING, c => c.Ip,
-            "port", Codecs.INT, c => c.Port,
-            "max_players", Codecs.INT, c => c.MaxPlayers,
-            "whitelist", Whitelist.CODEC, c => c.Whitelist,
-            "banned_players", guid_codec.List(), c => c.BannedPlayers,
-            "title", Codecs.STRING, c => c.Title,
-            "subtitle", Codecs.STRING, c => c.Subtitle,
-            (ip, port, max, whitelist, banned, title, subtitle) => new ServerConfigFile(ip, port, max, whitelist, banned, title, subtitle)
-        );
+        public static readonly StructCodec<ServerConfigFile> RAW_CODEC = StructCodec.For<ServerConfigFile>()
+            .Field("ip", Codecs.STRING, c => c.Ip)
+            .Field("port", Codecs.INT, c => c.Port)
+            .Field("max_players", Codecs.INT, c => c.MaxPlayers)
+            .Field("whitelist", Whitelist.CODEC, c => c.Whitelist)
+            .Field("banned_players", guid_codec.List(), c => c.BannedPlayers)
+            .Field("title", Codecs.STRING, c => c.Title)
+            .Field("subtitle", Codecs.STRING, c => c.Subtitle)
+            .Build((ip, port, max, whitelist, banned, title, subtitle) => new ServerConfigFile(ip, port, max, whitelist, banned, title, subtitle));
 
         // Schema version changes:
         // 2 - Added `BannedPlayers`
@@ -127,11 +125,9 @@ public static class ServerConfig
     {
         public static readonly Whitelist DEFAULT = new Whitelist(false, []);
 
-        public static readonly Codec<Whitelist> CODEC = StructCodec.Of
-        (
-            "enabled", Codecs.BOOLEAN, w => w.Enabled,
-            "players", guid_codec.List(), w => w.Players,
-            (enabled, players) => new Whitelist(enabled, players)
-        );
+        public static readonly Codec<Whitelist> CODEC = StructCodec.For<Whitelist>()
+            .Field("enabled", Codecs.BOOLEAN, w => w.Enabled)
+            .Field("players", guid_codec.List(), w => w.Players)
+            .Build((enabled, players) => new Whitelist(enabled, players));
     }
 }

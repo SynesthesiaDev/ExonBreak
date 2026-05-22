@@ -6,10 +6,8 @@ public record TextColor(int PackedColor) : TextType
 {
     public override TagType Type => TagType.Color;
 
-    public static readonly BinaryCodec<TextColor> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.INT, p => p.PackedColor,
-        packed => new TextColor(packed)
-    );
+    public static readonly IBinaryCodec<TextColor> CODEC = BinaryCodecs.For<TextColor>()
+        .Field(BinaryCodecs.INT, p => p.PackedColor)
+        .Build(packed => new TextColor(packed));
 
 }

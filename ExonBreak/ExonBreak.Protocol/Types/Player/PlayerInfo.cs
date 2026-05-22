@@ -10,15 +10,13 @@ public record PlayerInfo(int ClientProtocolVersion, Guid Id, string Username, st
         new SpecialTag("Friend", -3152641, 1460547071, []),
     ];
 
-    public static readonly BinaryCodec<PlayerInfo> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.VAR_INT, p => p.ClientProtocolVersion,
-        BinaryCodec.GUID, p => p.Id,
-        BinaryCodec.String(16), p => p.Username,
-        BinaryCodec.String(24), p => p.Pronouns,
-        BinaryCodec.Enum<Platform>(), p => p.Platform,
-        (pv, id, username, pronouns, platform) => new PlayerInfo(pv, id, username, pronouns, platform)
-    );
+    public static readonly IBinaryCodec<PlayerInfo> CODEC = BinaryCodecs.For<PlayerInfo>()
+        .Field(BinaryCodecs.VAR_INT, p => p.ClientProtocolVersion)
+        .Field(BinaryCodecs.GUID, p => p.Id)
+        .Field(BinaryCodecs.String(16), p => p.Username)
+        .Field(BinaryCodecs.String(24), p => p.Pronouns)
+        .Field(BinaryCodecs.Enum<Platform>(), p => p.Platform)
+        .Build((pv, id, username, pronouns, platform) => new PlayerInfo(pv, id, username, pronouns, platform));
 
     public bool IsDev => SPECIAL_TAGS[0].Players.Contains(Id);
     public bool IsFriendOfDev => SPECIAL_TAGS[1].Players.Contains(Id);

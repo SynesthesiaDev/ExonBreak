@@ -18,6 +18,7 @@ public partial class MultiplayerMenuScreen : Screen
 {
     private TextBox username = null!;
     private TextBox ip = null!;
+    private TextBox pronouns = null!;
 
     [BackgroundDependencyLoader]
     private void load()
@@ -44,6 +45,12 @@ public partial class MultiplayerMenuScreen : Screen
                         PlaceholderText = "Player name",
                         Text = "Syn",
                     },
+                    pronouns = new BasicTextBox
+                    {
+                        Size = new Vector2(500, 60),
+                        PlaceholderText = "Pronouns",
+                        Text = "She/Her",
+                    },
                     ip = new BasicTextBox
                     {
                         Size = new Vector2(500, 60),
@@ -56,7 +63,7 @@ public partial class MultiplayerMenuScreen : Screen
                         Text = "Play",
                         Action = () =>
                         {
-                            var playerInfo = new PlayerInfo(SharedConstants.PROTOCOL_VERSION, Guid.NewGuid(), username.Current.Value, "They/Them", Platform.Windows);
+                            var playerInfo = new PlayerInfo(SharedConstants.PROTOCOL_VERSION, Guid.NewGuid(), username.Current.Value, pronouns.Current.Value, Platform.Windows);
                             var client = new GameClient(playerInfo, ip.Current.Value);
 
                             _ = client.Connect();

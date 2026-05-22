@@ -4,11 +4,9 @@ namespace ExonBreak.Protocol.Types.Text;
 
 public record TextContent(string Content) : TextType
 {
-    public static readonly BinaryCodec<TextContent> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.STRING, p => p.Content,
-        packed => new TextContent(packed)
-    );
+    public static readonly IBinaryCodec<TextContent> CODEC = BinaryCodecs.For<TextContent>()
+        .Field(BinaryCodecs.STRING, p => p.Content)
+        .Build(packed => new TextContent(packed));
 
     public override TagType Type => TagType.Content;
 }

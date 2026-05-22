@@ -4,12 +4,10 @@ namespace ExonBreak.Protocol.Types.Text;
 
 public record TextFormatting(TextFormatting.Tag Enable = 0, TextFormatting.Tag Disable = 0) : TextType
 {
-    public new static readonly BinaryCodec<TextFormatting> CODEC = BinaryCodec.Of
-    (
-        BinaryCodec.Flags<Tag>(), p => p.Enable,
-        BinaryCodec.Flags<Tag>(), p => p.Disable,
-        (enable, disable) => new TextFormatting(enable, disable)
-    );
+    public new static readonly IBinaryCodec<TextFormatting> CODEC = BinaryCodecs.For<TextFormatting>()
+        .Field(BinaryCodecs.Flags<Tag>(), p => p.Enable)
+        .Field(BinaryCodecs.Flags<Tag>(), p => p.Disable)
+        .Build((enable, disable) => new TextFormatting(enable, disable));
 
     public override TagType Type => TagType.Content;
 
@@ -22,5 +20,4 @@ public record TextFormatting(TextFormatting.Tag Enable = 0, TextFormatting.Tag D
         Strikethrough = 4,
         Underlined = 8,
     }
-
 }

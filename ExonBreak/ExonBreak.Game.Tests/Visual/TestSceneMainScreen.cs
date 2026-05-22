@@ -1,3 +1,4 @@
+using ExonBreak.Game.Screens.MultiplayerMenu;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace ExonBreak.Game.Tests.Visual
 
         public TestSceneMainScreen()
         {
-            Add(new ScreenStack(new MainScreen()) { RelativeSizeAxes = Axes.Both });
+            Add(new ScreenStack(new MultiplayerMenuScreen()) { RelativeSizeAxes = Axes.Both });
         }
     }
 }

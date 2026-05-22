@@ -8,8 +8,8 @@ public abstract record TextType : IProtocolObject
 {
     public abstract TagType Type { get; }
 
-    public static readonly BinaryCodec<TextType> CODEC = new BinaryCodecs.UnionBinaryCodec<TextType, TagType>(
-        BinaryCodec.Enum<TagType>(),
+    public static readonly IBinaryCodec<TextType> CODEC = new BinaryCodecDefinitions.UnionBinaryCodec<TextType, TagType>(
+        BinaryCodecs.Enum<TagType>(),
         value => value.Type,
         tag => tag switch
         {
