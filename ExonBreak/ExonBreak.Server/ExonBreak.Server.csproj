@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ExonBreak.Common\ExonBreak.Common.csproj" />
+      <ProjectReference Include="..\ExonBreak.Common\ExonBreak.Common.csproj"/>
     </ItemGroup>
 
 </Project>

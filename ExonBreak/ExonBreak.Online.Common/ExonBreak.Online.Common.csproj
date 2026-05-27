@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>14</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DotNetty.Buffers" Version="0.7.6" />
+      <PackageReference Include="MPack" Version="2.1.1" />
+      <PackageReference Include="SynesthesiaDev.Codon.Codec" Version="2026.522.1" />
+    </ItemGroup>
+
+</Project>

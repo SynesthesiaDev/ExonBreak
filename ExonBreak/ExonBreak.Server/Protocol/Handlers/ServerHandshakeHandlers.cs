@@ -1,18 +1,21 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using ExonBreak.Protocol;
 using ExonBreak.Protocol.Packets.Handshake;
+using ExonBreak.Protocol.Packets.Login;
 using ExonBreak.Server.Config;
+using ExonBreak.Server.Extensions;
 using Serilog;
 
 namespace ExonBreak.Server.Protocol.Handlers;
 
 public sealed class ServerHandshakeHandlers
 {
-    private static readonly ClientboundDenyLoginPacket deny_version_mismatch = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.ProtocolVersionMismatch);
-    private static readonly ClientboundDenyLoginPacket deny_banned = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.Banned);
-    private static readonly ClientboundDenyLoginPacket deny_whitelist = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.NotWhitelist);
-    private static readonly ClientboundDenyLoginPacket deny_invalid_username = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.InvalidName);
-    private static readonly ClientboundDenyLoginPacket deny_max_players_online = new ClientboundDenyLoginPacket(ClientboundDenyLoginPacket.Reason.MaxPlayersOnline);
+    private static readonly ClientboundDisconnectPacket deny_version_mismatch = new ClientboundDisconnectPacket(ClientboundDisconnectPacket.Reason.ProtocolVersionMismatch);
+    private static readonly ClientboundDisconnectPacket deny_banned = new ClientboundDisconnectPacket(ClientboundDisconnectPacket.Reason.Banned);
+    private static readonly ClientboundDisconnectPacket deny_whitelist = new ClientboundDisconnectPacket(ClientboundDisconnectPacket.Reason.NotWhitelist);
+    private static readonly ClientboundDisconnectPacket deny_invalid_username = new ClientboundDisconnectPacket(ClientboundDisconnectPacket.Reason.InvalidName);
+    private static readonly ClientboundDisconnectPacket deny_max_players_online = new ClientboundDisconnectPacket(ClientboundDisconnectPacket.Reason.MaxPlayersOnline);
 
     private static readonly Regex username_regex = new Regex("^[a-zA-Z0-9_]{3,16}$", RegexOptions.Compiled);
 
@@ -20,6 +23,7 @@ public sealed class ServerHandshakeHandlers
     {
         Log.Information("Received handshake from player {client}", packet.PlayerInfo);
         context.SendPacket(new ClientboundHandshakeResponsePacket(SharedConstants.PROTOCOL_VERSION, DedicatedServer.CachedStatus));
+        context.PlayerConnection.AsServer().PlayerInfo = packet.PlayerInfo;
     }
 
     public static void HandleLoginAttempt(ServerboundAttemptLoginPacket packet, PacketContext context)
@@ -50,12 +54,23 @@ public sealed class ServerHandshakeHandlers
             return;
         }
 
-        if (DedicatedServer.OnlinePlayers >= DedicatedServer.MaxPlayers)
+        if (DedicatedServer.OnlinePlayers >= ServerConfig.MaxPlayers)
         {
             context.SendPacket(deny_max_players_online);
             return;
         }
 
         context.SendPacket(new ClientboundAcceptLoginPacket());
+
+        var challenge = RandomNumberGenerator.GetBytes(32);
+        var connection = context.PlayerConnection.AsServer();
+        connection.PendingChallengeBytes = challenge;
+
+        context.SendPacket(new ClientboundEncryptionRequestPacket(DedicatedServer.PublicKey, challenge));
+
+        //Tomorrow todo
+        // - finish encryption networking
+        // - game storage
+        // - tile mapssssssssss rendering
     }
 }

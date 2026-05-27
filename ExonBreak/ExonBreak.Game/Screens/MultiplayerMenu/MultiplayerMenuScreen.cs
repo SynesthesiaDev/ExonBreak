@@ -1,5 +1,4 @@
-﻿using System;
-using ExonBreak.Game.Protocol;
+﻿using ExonBreak.Game.Protocol;
 using ExonBreak.Game.Utils;
 using ExonBreak.Protocol;
 using ExonBreak.Protocol.Types;
@@ -63,7 +62,7 @@ public partial class MultiplayerMenuScreen : Screen
                         Text = "Play",
                         Action = () =>
                         {
-                            var playerInfo = new PlayerInfo(SharedConstants.PROTOCOL_VERSION, Guid.NewGuid(), username.Current.Value, pronouns.Current.Value, Platform.Windows);
+                            var playerInfo = new PlayerInfo(SharedConstants.PROTOCOL_VERSION, ExonBreakGameBase.Identity.Guid, username.Current.Value, pronouns.Current.Value, Platform.Windows);
                             var client = new GameClient(playerInfo, ip.Current.Value);
 
                             _ = client.Connect();

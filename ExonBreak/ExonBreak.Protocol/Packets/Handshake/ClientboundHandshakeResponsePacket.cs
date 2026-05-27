@@ -14,7 +14,7 @@ public record ClientboundHandshakeResponsePacket(int ServerProtocolVersion, Clie
 
     public record Status(
         string Title,
-        TextComponent Subtitle,
+        FormattedText Subtitle,
         bool HasWhitelist,
         int OnlinePlayers,
         int Expeditions
@@ -22,7 +22,7 @@ public record ClientboundHandshakeResponsePacket(int ServerProtocolVersion, Clie
     {
         public static readonly IBinaryCodec<Status> CODEC = BinaryCodecs.For<Status>()
             .Field(BinaryCodecs.STRING, s => s.Title)
-            .Field(TextComponent.CODEC, s => s.Subtitle)
+            .Field(FormattedText.CODEC, s => s.Subtitle)
             .Field(BinaryCodecs.BOOLEAN, s => s.HasWhitelist)
             .Field(BinaryCodecs.VAR_INT, s => s.OnlinePlayers)
             .Field(BinaryCodecs.VAR_INT, s => s.Expeditions)

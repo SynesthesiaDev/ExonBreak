@@ -1,4 +1,5 @@
-﻿using Codon.Binary;
+﻿using System.Security.Cryptography;
+using Codon.Binary;
 
 namespace ExonBreak.Protocol.Types.Player;
 
@@ -22,4 +23,13 @@ public record PlayerInfo(int ClientProtocolVersion, Guid Id, string Username, st
     public bool IsFriendOfDev => SPECIAL_TAGS[1].Players.Contains(Id);
 
     public record SpecialTag(string Name, int Color, int TextColor, List<Guid> Players);
+
+    public static Guid DeriveGuid(byte[] publicKeyBytes)
+    {
+        var hash = SHA256.HashData(publicKeyBytes);
+        var guidBytes = hash[..16];
+        guidBytes[6] = (byte)((guidBytes[6] & 0x0F) | 0x40);
+        guidBytes[8] = (byte)((guidBytes[8] & 0x3F) | 0x80);
+        return new Guid(guidBytes);
+    }
 }

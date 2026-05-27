@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.iOS", "ExonBreak.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Game", "ExonBreak.Game\ExonBreak.Game.csproj", "{1ADACD09-7BE3-46A1-AEAB-C41E78E8700F}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "ExonBreak.Game.Tests", "ExonBreak.Game.Tests\ExonBreak.Game.Tests.csproj", "{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}"
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "ExonBreak.Tests", "ExonBreak.Game.Tests\ExonBreak.Tests.csproj", "{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Resources", "ExonBreak.Resources\ExonBreak.Resources.csproj", "{31D3872C-3A4F-437E-9655-3EF58DD62F46}"
 EndProject

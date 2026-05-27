@@ -1,4 +1,5 @@
 ﻿using ExonBreak.Protocol.Packets.Handshake;
+using ExonBreak.Protocol.Packets.Login;
 using ExonBreak.Protocol.Registry;
 using ExonBreak.Server.Protocol.Handlers;
 
@@ -10,5 +11,6 @@ public class ServerPacketHandlers
     {
         packetRegistry.AddHandler<ServerboundHandshakeRequestPacket>(ServerHandshakeHandlers.HandleHandshake);
         packetRegistry.AddHandler<ServerboundAttemptLoginPacket>(ServerHandshakeHandlers.HandleLoginAttempt);
+        packetRegistry.AddHandler<ServerboundEncryptionResponsePacket>(ServerLoginHandler.HandleEncryptionResponse);
     }
 }

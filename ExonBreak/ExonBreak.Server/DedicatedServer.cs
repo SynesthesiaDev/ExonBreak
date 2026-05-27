@@ -1,6 +1,7 @@
-﻿using ExonBreak.Common.Text;
+﻿using System.Security.Cryptography;
 using ExonBreak.Protocol.Packets.Handshake;
 using ExonBreak.Protocol.Registry;
+using ExonBreak.Protocol.Types.Text;
 using ExonBreak.Server.Config;
 using ExonBreak.Server.Protocol;
 using ExonBreak.Server.Protocol.Netty;
@@ -13,13 +14,16 @@ public class DedicatedServer
     public static readonly ServerboundPacketRegistry SERVERBOUND_PACKET_REGISTRY = new ServerboundPacketRegistry(Log.Verbose, ProtocolSide.Server);
     public static readonly ClientboundPacketRegistry CLIENTBOUND_PACKET_REGISTRY = new ClientboundPacketRegistry(Log.Verbose, ProtocolSide.Server);
     public static int OnlinePlayers { get; set; } = 0;
-    public static int MaxPlayers { get; set; } = 0;
     public static int Expeditions { get; set; } = 0;
     public static bool IsInternal { get; private set; }
 
     public static ClientboundHandshakeResponsePacket.Status CachedStatus = null!;
 
     public static readonly string PATH = AppDomain.CurrentDomain.BaseDirectory;
+
+    public static readonly RSA CIPHER = RSA.Create(2048);
+
+    public static byte[] PublicKey => CIPHER.ExportSubjectPublicKeyInfo();
 
     public static void InvalidateCachedStatus()
     {

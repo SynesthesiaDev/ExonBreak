@@ -1,3 +1,4 @@
+using ExonBreak.Game.Persistent;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -17,6 +18,7 @@ namespace ExonBreak.Game
         protected override Container<Drawable> Content { get; }
 
         protected Storage Storage { get; set; }
+        public static PlayerIdentity Identity { get; private set; }
 
         protected ExonBreakGameBase()
         {
@@ -26,16 +28,14 @@ namespace ExonBreak.Game
                 // You may want to change TargetDrawSize to your "default" resolution, which will decide how things scale and position when using absolute coordinates.
                 TargetDrawSize = new Vector2(1366, 768)
             });
-
-            // Storage = Host.Storage;
-
-            // Storage.CreateFileSafely()
         }
 
         [BackgroundDependencyLoader]
         private void load()
         {
             Resources.AddStore(new DllResourceStore(typeof(ExonBreakResources).Assembly));
+            Storage = Host.Storage;
+            Identity = PlayerIdentity.LoadOrCreate(Storage);
         }
     }
 }

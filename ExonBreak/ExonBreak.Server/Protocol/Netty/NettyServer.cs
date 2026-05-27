@@ -28,7 +28,7 @@ public class NettyServer
                     // Inbound
                     pipeline.AddLast(new InboundFrameDecoder());
                     pipeline.AddLast(new InboundWrappedPacketDecoder());
-                    pipeline.AddLast(new ServerPacketHandler());
+                    pipeline.AddLast(new ServerPlayerConnection());
 
                     // Outbound
                     pipeline.AddLast(new OutboundLengthPrepender());

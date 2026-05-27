@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using ExonBreak.Protocol.Types;
 using ExonBreak.Server.Protocol.Netty;
 using osu.Framework.Logging;
 
@@ -14,7 +13,7 @@ public class NettyClient(string ip, int port, GameClient client)
 {
     private IChannel channel = null!;
     private IEventLoopGroup group = null!;
-    private PacketHandler packetHandler = null!;
+    private ClientPlayerConnection playerConnection = null!;
 
     public async Task ConnectAsync()
     {
@@ -31,7 +30,7 @@ public class NettyClient(string ip, int port, GameClient client)
                 // Inbound
                 pipeline.AddLast(new InboundFrameDecoder());
                 pipeline.AddLast(new InboundWrappedPacketDecoder());
-                pipeline.AddLast(packetHandler = new ClientPacketHandler(client));
+                pipeline.AddLast(playerConnection = new ClientPlayerConnection(client));
 
                 // Outbound
                 pipeline.AddLast(new OutboundLengthPrepender());
@@ -48,7 +47,7 @@ public class NettyClient(string ip, int port, GameClient client)
 
             Logger.Log($"Connected to server at {ip}:{port}", LoggingTarget.Network);
 
-            packetHandler.OnConnected(channel);
+            playerConnection.OnConnected(channel);
 
             _ = waitForCloseAsync();
         }

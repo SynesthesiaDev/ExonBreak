@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Desktop", "ExonBr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Game", "ExonBreak\ExonBreak.Game\ExonBreak.Game.csproj", "{DA1E3EF0-C666-4144-8E91-32ADA53A8143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Game.Tests", "ExonBreak\ExonBreak.Game.Tests\ExonBreak.Game.Tests.csproj", "{E35EAF6A-2030-4AD4-89E0-71C19B10D9FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Tests", "ExonBreak\ExonBreak.Tests\ExonBreak.Tests.csproj", "{E35EAF6A-2030-4AD4-89E0-71C19B10D9FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Resources", "ExonBreak\ExonBreak.Resources\ExonBreak.Resources.csproj", "{CD2899C7-7EC1-4059-9DAD-3118DC313F7A}"
 EndProject
@@ -13,6 +13,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Server", "ExonBreak\ExonBreak.Server\ExonBreak.Server.csproj", "{30FC3DEE-C8F5-4C04-BF42-06560AF25469}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Common", "ExonBreak\ExonBreak.Common\ExonBreak.Common.csproj", "{F20275A3-DEC6-4A89-B5A3-6774242BDBE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Online.Common", "ExonBreak\ExonBreak.Online.Common\ExonBreak.Online.Common.csproj", "{ACF34595-EDDE-4789-989D-04944E29C539}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExonBreak.Online.Services", "ExonBreak\ExonBreak.Online.Services\ExonBreak.Online.Services.csproj", "{BC1EBA00-9723-4AEA-980D-B0C8863F2E15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +52,13 @@ Global
 		{F20275A3-DEC6-4A89-B5A3-6774242BDBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F20275A3-DEC6-4A89-B5A3-6774242BDBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F20275A3-DEC6-4A89-B5A3-6774242BDBE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF34595-EDDE-4789-989D-04944E29C539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF34595-EDDE-4789-989D-04944E29C539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF34595-EDDE-4789-989D-04944E29C539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF34595-EDDE-4789-989D-04944E29C539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC1EBA00-9723-4AEA-980D-B0C8863F2E15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC1EBA00-9723-4AEA-980D-B0C8863F2E15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC1EBA00-9723-4AEA-980D-B0C8863F2E15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC1EBA00-9723-4AEA-980D-B0C8863F2E15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
