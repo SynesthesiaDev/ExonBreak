@@ -9,7 +9,7 @@ using osu.Framework.Logging;
 
 namespace ExonBreak.Game.Protocol;
 
-public class NettyClient(string ip, int port, GameClient client)
+public class NettyClient(string ip, int port, GameClient client) : IDisposable
 {
     private IChannel channel = null!;
     private IEventLoopGroup group = null!;
@@ -43,13 +43,23 @@ public class NettyClient(string ip, int port, GameClient client)
             var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
             Logger.Log($"Attempting connection to {ip}:{port}...", LoggingTarget.Network);
 
-            channel = await bootstrap.ConnectAsync(endpoint);
+            var connectTask = bootstrap.ConnectAsync(endpoint);
+            var timeoutTask = Task.Delay(5000);
 
-            Logger.Log($"Connected to server at {ip}:{port}", LoggingTarget.Network);
+            var completed = await Task.WhenAny(connectTask, timeoutTask);
 
-            playerConnection.OnConnected(channel);
-
-            _ = waitForCloseAsync();
+            if (completed == connectTask)
+            {
+                channel = await connectTask;
+                Logger.Log($"Connected to server at {ip}:{port}", LoggingTarget.Network);
+                playerConnection.OnConnected(channel);
+                _ = waitForCloseAsync();
+            }
+            else
+            {
+                Logger.Log("Failed to connect.. connection timed out", LoggingTarget.Network, LogLevel.Error);
+                await waitForCloseAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -67,13 +77,14 @@ public class NettyClient(string ip, int port, GameClient client)
         }
         finally
         {
-            await group.ShutdownGracefullyAsync();
             Logger.Log("Disconnected, event loop shut down", LoggingTarget.Network);
+            Dispose();
         }
     }
 
-    public async Task DisconnectAsync()
+    public void Dispose()
     {
-        if (channel != null) await channel.CloseAsync();
+        group.ShutdownGracefullyAsync();
+        client.OnDisconnected.Dispatch(client);
     }
 }

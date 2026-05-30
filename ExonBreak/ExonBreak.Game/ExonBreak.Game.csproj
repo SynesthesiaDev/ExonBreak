@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\ExonBreak.Resources\ExonBreak.Resources.csproj"/>
@@ -10,8 +11,5 @@
         <PackageReference Include="ppy.osu.Framework" Version="2026.513.0" />
         <PackageReference Include="Serilog" Version="4.3.2-dev-02419" />
         <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Components\UI\" />
     </ItemGroup>
 </Project>

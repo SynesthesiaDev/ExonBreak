@@ -4,20 +4,24 @@ using ExonBreak.Protocol;
 using ExonBreak.Protocol.Types;
 using ExonBreak.Protocol.Types.Player;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Screens;
-using osuTK;
 
 namespace ExonBreak.Game.Screens.MultiplayerMenu;
 
 public partial class MultiplayerMenuScreen : Screen
 {
-    private TextBox username = null!;
-    private TextBox ip = null!;
-    private TextBox pronouns = null!;
+    public ServerDetailsComponent ServerDetailsComponent = null!;
+    public LoadingComponent LoadingComponent = null!;
+
+    private readonly BindableBool connecting = new BindableBool();
+
+    public PlayerInfo? PlayerInfo;
+
+    public GameClient? GameClient;
 
     [BackgroundDependencyLoader]
     private void load()
@@ -27,49 +31,81 @@ public partial class MultiplayerMenuScreen : Screen
             new Box
             {
                 Colour = Branding.BACKGROUND1,
-                RelativeSizeAxes = Axes.Both,
+                RelativeSizeAxes = Axes.Both
             },
-            new FillFlowContainer
+            new Container
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 AutoSizeAxes = Axes.Both,
-                Direction = FillDirection.Vertical,
-                Spacing = new Vector2(25),
+                Margin = new MarginPadding { Top = 40, Bottom = 40, Left = 20, Right = 20 },
+                Masking = true,
                 Children =
                 [
-                    username = new BasicTextBox
+                    new Box
                     {
-                        Size = new Vector2(500, 60),
-                        PlaceholderText = "Player name",
-                        Text = "Syn",
+                        RelativeSizeAxes = Axes.Both,
+                        Colour = Branding.SURFACE1
                     },
-                    pronouns = new BasicTextBox
-                    {
-                        Size = new Vector2(500, 60),
-                        PlaceholderText = "Pronouns",
-                        Text = "She/Her",
-                    },
-                    ip = new BasicTextBox
-                    {
-                        Size = new Vector2(500, 60),
-                        PlaceholderText = "Server IP",
-                        Text = "127.0.0.1"
-                    },
-                    new BasicButton
-                    {
-                        Size = new Vector2(500, 60),
-                        Text = "Play",
-                        Action = () =>
-                        {
-                            var playerInfo = new PlayerInfo(SharedConstants.PROTOCOL_VERSION, ExonBreakGameBase.Identity.Guid, username.Current.Value, pronouns.Current.Value, Platform.Windows);
-                            var client = new GameClient(playerInfo, ip.Current.Value);
 
-                            _ = client.Connect();
-                        }
+                    new FillFlowContainer
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        AutoSizeAxes = Axes.Both,
+                        Direction = FillDirection.Vertical,
+                        Children =
+                        [
+                            ServerDetailsComponent = new ServerDetailsComponent
+                            {
+                                OnFormSubmitted = form =>
+                                {
+                                    PlayerInfo = new PlayerInfo(
+                                        SharedConstants.PROTOCOL_VERSION,
+                                        ExonBreakGameBase.Identity.Guid,
+                                        form.Username,
+                                        form.Pronouns,
+                                        Platform.Windows
+                                    );
+                                    GameClient = new GameClient(PlayerInfo, form.IpAddress);
+                                    _ = GameClient.Connect();
+                                    connecting.Value = true;
+
+                                    GameClient.OnDisconnected.Subscribe(_ =>
+                                    {
+                                        connecting.Value = false;
+                                    });
+                                }
+                            },
+
+                            LoadingComponent = new LoadingComponent
+                            {
+                                OnCancel = () =>
+                                {
+                                    GameClient?.Disconnect();
+                                }
+                            }
+                        ]
                     }
-                ],
+                ]
             }
         ];
+    }
+
+    protected override void LoadComplete()
+    {
+        base.LoadComplete();
+
+        connecting.BindValueChanged(e =>
+        {
+            if (!e.NewValue)
+            {
+                GameClient?.Dispose();
+                GameClient = null;
+            }
+
+            ServerDetailsComponent.FadeTo(!e.NewValue ? 1 : 0, 0, Easing.OutQuint);
+            LoadingComponent.FadeTo(e.NewValue ? 1 : 0, 0, Easing.OutQuint);
+        }, true);
     }
 }

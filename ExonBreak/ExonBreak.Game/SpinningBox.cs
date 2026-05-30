@@ -31,14 +31,14 @@ namespace ExonBreak.Game
                     {
                         RelativeSizeAxes = Axes.Both,
                         Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
+                        Origin = Anchor.Centre
                     },
                     new Sprite
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Texture = textures.Get("logo")
-                    },
+                    }
                 }
             };
         }

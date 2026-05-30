@@ -17,4 +17,8 @@ public sealed class Branding
     public static readonly Color4 TEXT4 = Color4Extensions.FromHex("#93B0C2");
     public static readonly Color4 BLUE_DARK = Color4Extensions.FromHex("#3D68A1");
     public static readonly Color4 BLUE_BRIGHT = Color4Extensions.FromHex("#5490D5");
+    public static readonly Color4 RED = Color4Extensions.FromHex("#D55454");
+    public static readonly Color4 BLUE_BRIGHT_HIGHLIGHT = Color4Extensions.FromHex("#7DAADF");
+
+    public const string FONT_NAME = "Fonts/TiltNeon";
 }

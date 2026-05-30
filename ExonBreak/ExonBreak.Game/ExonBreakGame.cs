@@ -1,4 +1,4 @@
-﻿using ExonBreak.Game.Screens.MultiplayerMenu;
+﻿using ExonBreak.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
@@ -12,6 +12,7 @@ public partial class ExonBreakGame : ExonBreakGameBase
     [BackgroundDependencyLoader]
     private void load()
     {
+        AddFont(Resources, @"Fonts/TiltNeon");
         Child = screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both };
     }
 
@@ -19,6 +20,7 @@ public partial class ExonBreakGame : ExonBreakGameBase
     {
         base.LoadComplete();
 
-        screenStack.Push(new MultiplayerMenuScreen());
+        // screenStack.Push(new MultiplayerMenuScreen());
+        screenStack.Push(new ComponentTestScreen());
     }
 }

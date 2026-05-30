@@ -34,6 +34,15 @@ namespace ExonBreak.Game
         private void load()
         {
             Resources.AddStore(new DllResourceStore(typeof(ExonBreakResources).Assembly));
+
+            // foreach (var availableResource in Resources.GetAvailableResources())
+            // {
+            // }
+
+            // foreach (var availableResource in Fonts.GetAvailableResources())
+            // {
+                // Logger.Log(availableResource);
+            // }
             Storage = Host.Storage;
             Identity = PlayerIdentity.LoadOrCreate(Storage);
         }
