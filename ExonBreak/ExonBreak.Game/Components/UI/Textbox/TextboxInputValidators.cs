@@ -1,10 +1,12 @@
 ﻿using System.Text.RegularExpressions;
+using SynesthesiaUtil.Extensions;
 
 namespace ExonBreak.Game.Components.UI.Textbox;
 
 public sealed partial class TextboxInputValidators
 {
     public static readonly AlphanumericRule ALPHANUMERIC = new AlphanumericRule();
+    public static readonly NonEmptyRule NON_EMPTY = new NonEmptyRule();
     public static readonly NumericRule NUMERIC = new NumericRule();
 
     public static MaxLengthRule MaxLenght(int maxLength) => new MaxLengthRule(maxLength);
@@ -13,20 +15,27 @@ public sealed partial class TextboxInputValidators
     // public static readonly MaxLengthRule MAX_LENGTH = new MaxLengthRule();
     // public static readonly MinLengthRule MIN_LENGTH = new MinLengthRule();
 
+    public partial class NonEmptyRule : ExonFormTextbox.IInputValidator
+    {
+        private static readonly ExonFormTextbox.IInputValidator.Result null_or_white_space = new ExonFormTextbox.IInputValidator.Result(false, "Input cannot be empty");
+
+        public ExonFormTextbox.IInputValidator.Result Validate(string input)
+        {
+            return string.IsNullOrWhiteSpace(input) ? null_or_white_space : ExonFormTextbox.IInputValidator.Result.PASS;
+        }
+    }
+
     public partial class AlphanumericRule : ExonFormTextbox.IInputValidator
     {
         [GeneratedRegex("^[a-zA-Z0-9_]+$")]
         private static partial Regex alphanumericRegex();
 
         private static readonly ExonFormTextbox.IInputValidator.Result error =
-            new ExonFormTextbox.IInputValidator.Result(false, "Only letters, numbers and underscores are allowed");
+            new ExonFormTextbox.IInputValidator.Result(false, "Letters/numbers/_ only");
 
         public ExonFormTextbox.IInputValidator.Result Validate(string input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return ExonFormTextbox.IInputValidator.Result.NULL_OR_WHITE_SPACE;
-
-            return !alphanumericRegex().IsMatch(input) ? error : ExonFormTextbox.IInputValidator.Result.PASS;
+            return !input.IsEmpty() && !alphanumericRegex().IsMatch(input) ? error : ExonFormTextbox.IInputValidator.Result.PASS;
         }
     }
 
@@ -40,7 +49,7 @@ public sealed partial class TextboxInputValidators
 
         public ExonFormTextbox.IInputValidator.Result Validate(string input)
         {
-            return !numericRegex().IsMatch(input) ? error : ExonFormTextbox.IInputValidator.Result.PASS;
+            return !input.IsEmpty() && !numericRegex().IsMatch(input) ? error : ExonFormTextbox.IInputValidator.Result.PASS;
         }
     }
 
@@ -64,7 +73,7 @@ public sealed partial class TextboxInputValidators
         public ExonFormTextbox.IInputValidator.Result Validate(string input)
         {
             var lenght = input.Length;
-            return lenght < minLength ? error : ExonFormTextbox.IInputValidator.Result.PASS;
+            return !input.IsEmpty() && lenght < minLength ? error : ExonFormTextbox.IInputValidator.Result.PASS;
         }
     }
 }

@@ -21,8 +21,8 @@ public partial class ExonFormTextbox : CompositeDrawable
     private readonly Color4 borderColorInactive = Branding.SURFACE0;
     private readonly Color4 borderColorActiveError = Branding.RED;
 
-    private const float hover_additive_alpha = 0.03f;
-    private const int error_container_rolled_out_height = 75;
+    private const float hover_additive_alpha = 0.05f;
+    private const int error_container_rolled_out_height = 65;
 
     public Bindable<string> Current
     {
@@ -45,6 +45,7 @@ public partial class ExonFormTextbox : CompositeDrawable
     private Container hoverLayer = null!;
 
     public bool HasValidatorErrors => errorText.Value != null;
+
 
     [BackgroundDependencyLoader]
     private void load()
@@ -98,7 +99,7 @@ public partial class ExonFormTextbox : CompositeDrawable
                     {
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Padding = new MarginPadding(16),
+                        Padding = new MarginPadding(10),
                         Spacing = new Vector2(0, 4),
                         Children =
                         [
@@ -201,7 +202,6 @@ public partial class ExonFormTextbox : CompositeDrawable
         record Result(bool Passed, string? Error)
         {
             public static readonly Result PASS = new Result(true, null);
-            public static readonly Result NULL_OR_WHITE_SPACE = new Result(false, "Input cannot be empty");
         };
     }
 
