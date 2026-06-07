@@ -77,6 +77,7 @@ public class NettyClient(string ip, int port, GameClient client) : IDisposable
         }
         finally
         {
+
             Logger.Log("Disconnected, event loop shut down", LoggingTarget.Network);
             Dispose();
         }
@@ -84,6 +85,7 @@ public class NettyClient(string ip, int port, GameClient client) : IDisposable
 
     public void Dispose()
     {
+        channel.CloseAsync();
         group.ShutdownGracefullyAsync();
         client.OnDisconnected.Dispatch(client);
     }

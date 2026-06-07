@@ -23,6 +23,13 @@ public class ServerPlayerConnection : PlayerConnection
         base.ChannelActive(context);
     }
 
+    public override void ChannelInactive(IChannelHandlerContext context)
+    {
+        Log.Information("(Server) Client {username} ({uuid}) has disconnected", PlayerInfo.Username, PlayerInfo.Id);
+        PendingChallengeBytes = null;
+        base.ChannelInactive(context);
+    }
+
     protected override void ChannelRead0(IChannelHandlerContext ctx, WrappedPacket msg)
     {
         try
@@ -38,5 +45,4 @@ public class ServerPlayerConnection : PlayerConnection
             msg.Data.Release();
         }
     }
-
 }

@@ -1,4 +1,5 @@
-﻿using ExonBreak.Game.Utils;
+﻿using System;
+using ExonBreak.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -19,6 +20,8 @@ public partial class ExonButton : CompositeDrawable
     private Container contentContainer = null!;
 
     public required string Text { get; init; }
+
+    public required Action Clicked { get; init; }
 
     [BackgroundDependencyLoader]
     private void load()
@@ -84,6 +87,7 @@ public partial class ExonButton : CompositeDrawable
     protected override void OnMouseUp(MouseUpEvent e)
     {
         contentContainer.ScaleTo(1, 1000, Easing.OutElastic);
+        Clicked.Invoke();
     }
 
     protected override bool OnHover(HoverEvent e)

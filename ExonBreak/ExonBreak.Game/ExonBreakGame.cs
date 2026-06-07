@@ -1,4 +1,5 @@
-﻿using ExonBreak.Game.Screens;
+﻿using ExonBreak.Game.Protocol;
+using ExonBreak.Game.Screens.Multiplayer;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
@@ -7,7 +8,9 @@ namespace ExonBreak.Game;
 
 public partial class ExonBreakGame : ExonBreakGameBase
 {
-    private ScreenStack screenStack;
+    private ScreenStack screenStack = null!;
+
+    public static GameClient? GameClient = null;
 
     [BackgroundDependencyLoader]
     private void load()
@@ -21,6 +24,6 @@ public partial class ExonBreakGame : ExonBreakGameBase
         base.LoadComplete();
 
         // screenStack.Push(new MultiplayerMenuScreen());
-        screenStack.Push(new ComponentTestScreen());
+        screenStack.Push(new ConnectMenu());
     }
 }

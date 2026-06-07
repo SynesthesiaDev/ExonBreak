@@ -26,6 +26,7 @@ public record BootstrapResponse(
     public enum ActiveEvent
     {
         None,
+        Pride,
         Christmas,
         Halloween,
         NewYear,

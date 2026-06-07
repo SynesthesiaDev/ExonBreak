@@ -8,12 +8,25 @@ public sealed partial class TextboxInputValidators
     public static readonly AlphanumericRule ALPHANUMERIC = new AlphanumericRule();
     public static readonly NonEmptyRule NON_EMPTY = new NonEmptyRule();
     public static readonly NumericRule NUMERIC = new NumericRule();
+    public static readonly IpAddressRule IP_ADDRESS = new IpAddressRule();
 
     public static MaxLengthRule MaxLenght(int maxLength) => new MaxLengthRule(maxLength);
     public static MinLengthRule MinLength(int minLength) => new MinLengthRule(minLength);
 
-    // public static readonly MaxLengthRule MAX_LENGTH = new MaxLengthRule();
-    // public static readonly MinLengthRule MIN_LENGTH = new MinLengthRule();
+
+    public partial class IpAddressRule : ExonFormTextbox.IInputValidator
+    {
+        private static readonly ExonFormTextbox.IInputValidator.Result not_valid_ip_address = new ExonFormTextbox.IInputValidator.Result(false, "Not a valid ip address");
+
+        [GeneratedRegex(@"^(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4})$")]
+        private static partial Regex ipRegex();
+
+
+        public ExonFormTextbox.IInputValidator.Result Validate(string input)
+        {
+            return !input.IsEmpty() && !ipRegex().IsMatch(input) ? not_valid_ip_address : ExonFormTextbox.IInputValidator.Result.PASS;
+        }
+    }
 
     public partial class NonEmptyRule : ExonFormTextbox.IInputValidator
     {

@@ -1,23 +1,24 @@
-﻿using System;
+﻿using ExonBreak.Game.Protocol;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
+using osu.Framework.Screens;
 using osuTK;
 
-namespace ExonBreak.Game.Screens.MultiplayerMenu;
+namespace ExonBreak.Game.Screens.Multiplayer;
 
-public partial class LoadingComponent : CompositeDrawable
+public partial class LoadingScreen : Screen
 {
-    public required Action OnCancel;
-
     private SpriteIcon spinnerIcon = null!;
+
+    [Resolved]
+    private MultiplayerSessionController sessionController { get; set; } = null!;
 
     [BackgroundDependencyLoader]
     private void load()
     {
-        AutoSizeAxes = Axes.Both;
         InternalChildren =
         [
             new FillFlowContainer
@@ -29,7 +30,7 @@ public partial class LoadingComponent : CompositeDrawable
                 AutoSizeAxes = Axes.Both,
                 Children =
                 [
-                    new Container()
+                    new Container
                     {
                         Size = new Vector2(500, 100),
                         Children =
@@ -43,11 +44,16 @@ public partial class LoadingComponent : CompositeDrawable
                             }
                         ]
                     },
+
                     new BasicButton
                     {
                         Size = new Vector2(500, 60),
                         Text = "Cancel",
-                        Action = () => OnCancel.Invoke()
+                        Action = () =>
+                        {
+                            sessionController.Disconnect();
+                            this.Exit();
+                        }
                     }
                 ]
             }
@@ -56,7 +62,16 @@ public partial class LoadingComponent : CompositeDrawable
 
     protected override void LoadComplete()
     {
-        spinnerIcon.Spin(1000, RotationDirection.Clockwise, startRotation: 0);
         base.LoadComplete();
+
+        spinnerIcon.Spin(1000, RotationDirection.Clockwise, startRotation: 0);
+
+        sessionController.ConnectionState.BindValueChanged(e =>
+        {
+            if (e.NewValue is MultiplayerSessionController.State.Failed or MultiplayerSessionController.State.Disconnected)
+            {
+                this.Exit();
+            }
+        });
     }
 }

@@ -20,11 +20,13 @@ public class GameClient(PlayerInfo playerInfo, string address = SharedConstants.
 
     public readonly EventDispatcher<GameClient> OnDisconnected = new EventDispatcher<GameClient>();
     public readonly EventDispatcher<GameClient> OnConnected = new EventDispatcher<GameClient>();
+    private string address = address;
 
     public async Task Connect()
     {
         Logger.Log("Trying to connect..");
         ClientPacketHandlers.RegisterHandlers(CLIENTBOUND_PACKET_REGISTRY);
+        if (address == "localhost") address = "127.0.0.1";
         NettyClient = new NettyClient(address, port, this);
 
         await NettyClient.ConnectAsync();
@@ -32,7 +34,7 @@ public class GameClient(PlayerInfo playerInfo, string address = SharedConstants.
 
     public void Disconnect()
     {
-        NettyClient.Dispose();
+        NettyClient?.Dispose();
     }
 
     public void Dispose()
